@@ -1,7 +1,9 @@
-resolver: lts-8.5
+resolver: lts-9.0
 packages:
 - '.'
-- location: haskell-opaleye/
+- location: 
+    git: git@bitbucket.org:buherteam/haskell-opaleye.git
+    commit: e914250685849412c8d29bfec155cb21b999ee4b
   extra-dep: true
 extra-deps: []
 flags: {}
