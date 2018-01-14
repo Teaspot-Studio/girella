@@ -31,11 +31,12 @@ import Safe
 import qualified Database.PostgreSQL.Simple as PG
 
 import Opaleye.Label (label)
-import Opaleye.Manipulation (Unpackspec, Updater)
+import Opaleye.Manipulation (Unpackspec)
+import Opaleye.Internal.Manipulation (Updater)
 import Opaleye.QueryArr
 import Opaleye.RunQuery (QueryRunner)
 import Opaleye.Table
-import qualified Opaleye.Manipulation as M (runDelete, runInsert, runInsertReturning, runUpdate, runUpdateEasy)
+import qualified Opaleye.Manipulation as M (runDelete, runInsertMany, runInsertManyReturning, runUpdate, runUpdateEasy)
 import qualified Opaleye.RunQuery     as M (runQueryExplicit, runQueryFoldExplicit)
 
 import Girella.Compat (prettySrcLoc)
@@ -48,7 +49,7 @@ import Girella.Transaction
 runInsert :: Transaction m => Table columns columns' -> columns -> m ()
 runInsert tab q = liftQ $ do
   conn <- ask
-  unsafeIOToTransaction . void $ M.runInsert conn tab q
+  unsafeIOToTransaction . void $ M.runInsertMany conn tab [q]
 
 -- | runInsertReturning inside a Transaction
 runInsertReturning
@@ -64,7 +65,7 @@ runInsertReturning
   -> m [domain]
 runInsertReturning tab ins ret = liftQ $ do
   conn <- ask
-  fmap conv . unsafeIOToTransaction $ M.runInsertReturning conn tab ins ret
+  fmap conv . unsafeIOToTransaction $ M.runInsertManyReturning conn tab [ins] ret
 
 -- | runUpdate inside a Transaction
 runUpdate :: Transaction m => Table columnsW columnsR -> (columnsR -> columnsW) -> (columnsR -> Column Bool) -> m Int64
