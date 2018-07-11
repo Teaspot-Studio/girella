@@ -161,7 +161,7 @@ type instance PGRep Double = PGFloat8
 instance PGNum Double where
   pgFromInteger = safeCoerceFromRep . pgFromInteger
 instance PGFractional Double where
-  pgFromRational = safeCoerceFromRep . pgFromRational
+  sqlFromRational = safeCoerceFromRep . sqlFromRational
 instance ShowConstant Double where
   constant = safeCoerceFromRep . pgDouble
 instance QueryRunnerColumnDefault Double Double where
